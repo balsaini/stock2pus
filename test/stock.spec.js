@@ -7,8 +7,9 @@ const sinon = require('sinon');
 let clock;
 
 describe('Stock', () => {
-  beforeEach(() => {
+  before(() => {
     nock('http://dev.markitondemand.com')
+    .persist()
     .get('/MODApis/Api/v2/Quote/json?symbol=AAPL')
     .reply(200, {
       Name: 'Apple',
@@ -18,7 +19,7 @@ describe('Stock', () => {
   });
   after(() => {
     clock.restore();
-    nock.restore();
+    nock.cleanAll();
   });
   describe('constructor', () => {
     it('should create a stock object', () => {
@@ -63,6 +64,14 @@ describe('Stock', () => {
           expect(totalIncome).to.equal(0);
           done();
         });
+      });
+    });
+  });
+  describe('.getQuote', () => {
+    it('should retrieve a quote from the web', (done) => {
+      Stock.getQuote('AAPL', (err, quoteResult) => {
+        expect(quoteResult).to.equal(100);
+        done();
       });
     });
   });

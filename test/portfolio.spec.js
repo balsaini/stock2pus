@@ -1,28 +1,45 @@
 const expect = require('chai').expect;
 const Portfolio = require('../lib/portfolio');
+const Stock = require('../lib/stock');
 
 describe('Portfolio', () => {
   describe('#constructor', () => {
-    const testPort = new Portfolio('Tech');
+    it('should create a portfolio object', () => {
+      const testPort = new Portfolio('Tech');
 
-    expect(testPort.name).to.equal('Tech');
-    expect(testPort.stocks).to.have.length(0);
+      expect(testPort.name).to.equal('Tech');
+      expect(testPort.stocks).to.have.length(0);
+    });
   });
   describe('#addStock', () => {
-    const testPort = new Portfolio('Tech');
-    testPort.addStock({ name: 'Hooray', shares: 10 });
-    testPort.addStock({ name: 'Hello', shares: 5 });
-    expect(testPort.stocks).to.have.length(2);
+    it('should add a stock to the portfolio', () => {
+      const testPort = new Portfolio('Tech');
+      testPort.addStock({ name: 'Hooray', shares: 10 });
+      testPort.addStock({ name: 'Hello', shares: 5 });
+      expect(testPort.stocks).to.have.length(2);
+    });
   });
   describe('#position', () => {
-    const testPort = new Portfolio('EDMS');
-    testPort.addStock({ name: 'silly', shares: 5, purchasePricePerShare: 1 });
-    testPort.addStock({ name: 'test', shares: 10, purchasePricePerShare: 2 });
-    const firstTestResult = testPort.position();
-    testPort.stocks[0].shares = 0;
-    const secondTestResult = testPort.position();
+    it('should determine and report the position of the portfolio', () => {
+      const testPort = new Portfolio('EDMS');
 
-    expect(firstTestResult).to.equal(25);
-    expect(secondTestResult).to.equal(20);
+      const s1 = new Stock('silly');
+      s1.shares = 5;
+      s1.purchasePricePerShare = 1;
+
+      const s2 = new Stock('test');
+      s2.shares = 10;
+      s2.purchasePricePerShare = 2;
+
+      testPort.addStock(s1);
+      testPort.addStock(s2);
+
+      const firstTestResult = testPort.position();
+      testPort.stocks[0].shares = 0;
+      const secondTestResult = testPort.position();
+
+      expect(firstTestResult).to.equal(25);
+      expect(secondTestResult).to.equal(20);
+    });
   });
 });
